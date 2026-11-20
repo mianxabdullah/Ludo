@@ -39,3 +39,40 @@ def valid_moves(state, roll: int) -> list:
         i for i in range(len(state.active().pieces))
         if check_move(state, i, roll)[0]
     ]
+
+
+def apply_move(state, piece: int, roll: int) -> dict:
+    """
+    Make a move that was already checked.
+    Returns {"captured": [(player_index, piece_index), ...],
+             "finished_piece": bool, "won": bool, "extra_roll": bool}
+    Extra roll here means capture or finished piece (rule 13).
+    Sixes are handled by resolve_rolls.
+    """
+    player = state.active()
+    step = player.pieces[piece]
+
+    # Leave start with a six, otherwise advance by the roll.
+    player.pieces[piece] = 0 if step == START_AREA_STEP else step + roll
+    new_step = player.pieces[piece]
+
+    captured = []
+    square = square_of(player.colour, new_step)
+    if square is not None and square not in SAFE_SQUARES:
+        for idx, other in enumerate(state.players):
+            if other is player:
+                continue
+            for j, other_step in enumerate(other.pieces):
+                if square_of(other.colour, other_step) == square:
+                    other.pieces[j] = START_AREA_STEP
+                    captured.append((idx, j))
+
+    finished_piece = new_step == FINAL_STEP
+    won = all(s == FINAL_STEP for s in player.pieces)
+
+    return {
+        "captured": captured,
+        "finished_piece": finished_piece,
+        "won": won,
+        "extra_roll": bool(captured) or finished_piece,
+    }
