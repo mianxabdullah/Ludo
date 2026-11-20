@@ -76,3 +76,12 @@ def apply_move(state, piece: int, roll: int) -> dict:
         "won": won,
         "extra_roll": bool(captured) or finished_piece,
     }
+
+def resolve_rolls(sixes: int, last: int) -> list:
+    """
+    Rule 14. 'sixes' = sixes rolled in a row, 'last' = the non-six that ended them.
+    Every complete group of 3 sixes is cancelled; the rest are played, then 'last'.
+    6,6,6,4 -> [4]    6x6,5 -> [5]    6,6,6,6,3 -> [6, 3]
+    """
+    leftover = sixes % SIX_CANCEL_GROUP
+    return [SIX] * leftover + [last]
