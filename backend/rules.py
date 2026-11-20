@@ -32,3 +32,10 @@ def check_move(state, piece: int, roll: int):
     if step + roll > FINAL_STEP:
         return False, "You need the exact number to finish."
     return True, ""
+
+def valid_moves(state, roll: int) -> list:
+    """Indices of the active player's pieces that can move with this roll."""
+    return [
+        i for i in range(len(state.active().pieces))
+        if check_move(state, i, roll)[0]
+    ]
