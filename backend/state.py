@@ -45,3 +45,12 @@ class GameState:
         self.winner = None        # player index when game ends
         self.finished = False
         self.message = ""
+
+    def active(self) -> Player:
+        return self.players[self.current]
+
+    def next_turn(self):
+        self.current = (self.current + 1) % len(self.players)
+        self.pending_rolls = []
+        self.rolls_collected = []
+        self.dice_value = None
