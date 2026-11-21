@@ -54,3 +54,25 @@ class GameState:
         self.pending_rolls = []
         self.rolls_collected = []
         self.dice_value = None
+
+    
+    def to_dict(self) -> dict:
+        """State sent to the frontend."""
+        return {
+            "players": [
+                {
+                    "name": p.name,
+                    "colour": p.colour,
+                    "is_cpu": p.is_cpu,
+                    "pieces": p.pieces,
+                    "progress": p.progress(),
+                }
+                for p in self.players
+            ],
+            "current": self.current,
+            "dice_value": self.dice_value,
+            "pending_rolls": self.pending_rolls,
+            "winner": self.winner,
+            "finished": self.finished,
+            "message": self.message,
+        }
