@@ -7,3 +7,7 @@ from rules import square_of
 
 def _new_step(step: int, roll: int) -> int:
     return 0 if step == START_AREA_STEP else step + roll
+
+def _would_finish(state, piece: int, roll: int) -> bool:
+    step = state.active().pieces[piece]
+    return _new_step(step, roll) == FINAL_STEP
