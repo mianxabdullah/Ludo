@@ -11,3 +11,17 @@ def _new_step(step: int, roll: int) -> int:
 def _would_finish(state, piece: int, roll: int) -> bool:
     step = state.active().pieces[piece]
     return _new_step(step, roll) == FINAL_STEP
+
+def _would_capture(state, piece: int, roll: int) -> bool:
+    player = state.active()
+    new_step = _new_step(player.pieces[piece], roll)
+    square = square_of(player.colour, new_step)
+    if square is None or square in SAFE_SQUARES:
+        return False
+    for other in state.players:
+        if other is player:
+            continue
+        for s in other.pieces:
+            if square_of(other.colour, s) == square:
+                return True
+    return False
