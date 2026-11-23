@@ -9,3 +9,7 @@ from config import DICE_MIN, DICE_MAX
 _rng = random.SystemRandom()
 
 
+def roll() -> int:
+    """Return one fair dice value from DICE_MIN to DICE_MAX."""
+    return _rng.randint(DICE_MIN, DICE_MAX)
+
