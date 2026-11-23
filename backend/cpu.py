@@ -25,3 +25,22 @@ def _would_capture(state, piece: int, roll: int) -> bool:
             if square_of(other.colour, s) == square:
                 return True
     return False
+
+def choose_piece(state, roll: int, moves: list) -> int:
+    """Pick one piece index from 'moves' (must not be empty)."""
+    pieces = state.active().pieces
+
+    # 1. finish a piece
+    for i in moves:
+        if _would_finish(state, i, roll):
+            return i
+    # 2. capture an opponent
+    for i in moves:
+        if _would_capture(state, i, roll):
+            return i
+    # 3. bring a piece out of the start area
+    for i in moves:
+        if pieces[i] == START_AREA_STEP:
+            return i
+    # 4. move the piece that is furthest ahead
+    return max(moves, key=lambda i: pieces[i])
