@@ -20,3 +20,31 @@ class Controller:
         self.movable = []     # pieces the player may choose from
         self.last_roll = None
         self.events = []      # messages produced by the last action
+
+    def new_game(self, mode, players, humans, names):
+        if not MIN_PLAYERS <= players <= MAX_PLAYERS:
+            raise GameError("Choose 2, 3 or 4 players.")
+        if mode == "single":
+            humans = 1
+        elif mode == "multi":
+            if not 2 <= humans <= players:
+                raise GameError(f"Choose 2 to {players} human players.")
+        else:
+            raise GameError("Unknown mode.")
+
+        chosen = []
+        for i in range(humans):
+            name = names[i].strip() if i < len(names) else ""
+            if not name:
+                name = f"Player {i + 1}"
+            if len(name) > MAX_NAME_LENGTH:
+                raise GameError(f"A name can have at most {MAX_NAME_LENGTH} characters.")
+            chosen.append(name)
+        if len({n.lower() for n in chosen}) < len(chosen):
+            raise GameError("Each player needs a different name.")
+
+        self.seats = [{"name": n, "is_cpu": False} for n in chosen]
+        self.seats += [{"name": f"CPU {i + 1}", "is_cpu": True}
+                       for i in range(players - humans)]
+        self._start()
+        return self.snapshot()
