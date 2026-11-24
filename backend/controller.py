@@ -62,3 +62,12 @@ class Controller:
         self.events = []
         return self.snapshot()
 
+    def _start(self):
+        self.state = GameState(self.seats)
+        self.phase = "roll"
+        self.extra_rolls = 0
+        self.movable = []
+        self.last_roll = None
+        self.events = []
+        self._say(f"{self.state.active().name}'s turn.")
+
