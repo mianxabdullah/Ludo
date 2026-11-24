@@ -55,3 +55,10 @@ class Controller:
         self._start()
         return self.snapshot()
 
+    def quit(self):
+        self.state = None
+        self.seats = None
+        self.phase = "idle"
+        self.events = []
+        return self.snapshot()
+
