@@ -48,3 +48,10 @@ class Controller:
                        for i in range(players - humans)]
         self._start()
         return self.snapshot()
+
+    def restart(self):
+        if not self.seats:
+            raise GameError("No game to restart.")
+        self._start()
+        return self.snapshot()
+
