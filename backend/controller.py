@@ -72,7 +72,7 @@ class Controller:
         self._say(f"{self.state.active().name}'s turn.")
 
     # ---------- player actions ----------
-    
+
     def roll(self):
         self.events = []
         self._check(want_cpu=False, phase="roll")
@@ -83,5 +83,21 @@ class Controller:
         self.events = []
         self._check(want_cpu=False, phase="move")
         self._play_move(piece)
+        return self.snapshot()
+
+    def cpu_step(self):
+        """One CPU action: either a roll or a move."""
+        self.events = []
+        if self.state is None:
+            raise GameError("No game in progress.")
+        if self.state.finished:
+            raise GameError("The game is over.")
+        if not self.state.active().is_cpu:
+            raise GameError("It is not the computer's turn.")
+        if self.phase == "roll":
+            self._do_roll()
+        else:
+            piece = cpu.choose_piece(self.state, self.state.dice_value, self.movable)
+            self._play_move(piece)
         return self.snapshot()
 
