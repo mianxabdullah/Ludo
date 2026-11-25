@@ -133,3 +133,20 @@ class Controller:
         if not s.finished:
             self._advance()
 
+    def _do_move(self, piece, roll):
+        s = self.state
+        name = s.active().name
+        result = apply_move(s, piece, roll)
+
+        for idx, _ in result["captured"]:
+            self._say(f"{name} captured a piece of {s.players[idx].name}.")
+        if result["won"]:
+            s.finished = True
+            s.winner = s.current
+            s.pending_rolls = []
+            self.movable = []
+            self.phase = "over"
+            self._say(f"{name} wins!")
+        elif result["extra_roll"]:
+            self.extra_rolls += 1  # taken after the current rolls (rule 13)
+
