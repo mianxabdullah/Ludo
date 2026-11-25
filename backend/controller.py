@@ -101,7 +101,7 @@ class Controller:
             self._play_move(piece)
         return self.snapshot()
 
-        # ---------- turn flow ----------
+    # ---------- turn flow ----------
 
     def _do_roll(self):
         s = self.state
@@ -121,4 +121,15 @@ class Controller:
         s.pending_rolls = resolve_rolls(len(s.rolls_collected), value)
         s.rolls_collected = []
         self._advance()
+
+    def _play_move(self, piece):
+        s = self.state
+        if piece not in range(len(s.active().pieces)):
+            raise GameError("Invalid piece.")
+        ok, reason = check_move(s, piece, s.dice_value)
+        if not ok:
+            raise GameError(reason)
+        self._do_move(piece, s.dice_value)
+        if not s.finished:
+            self._advance()
 
