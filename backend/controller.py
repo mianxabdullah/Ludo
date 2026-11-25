@@ -71,3 +71,11 @@ class Controller:
         self.events = []
         self._say(f"{self.state.active().name}'s turn.")
 
+        # ---------- player actions ----------
+
+    def roll(self):
+        self.events = []
+        self._check(want_cpu=False, phase="roll")
+        self._do_roll()
+        return self.snapshot()
+
