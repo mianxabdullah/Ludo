@@ -101,3 +101,24 @@ class Controller:
             self._play_move(piece)
         return self.snapshot()
 
+        # ---------- turn flow ----------
+
+    def _do_roll(self):
+        s = self.state
+        name = s.active().name
+        value = dice.roll()
+        self.last_roll = value
+        s.dice_value = value
+
+        if value == SIX:  # collect sixes, roll again (rule 14)
+            s.rolls_collected.append(value)
+            self._say(f"{name} rolled a 6 and rolls again.")
+            return
+
+        if len(s.rolls_collected) >= SIX_CANCEL_GROUP:
+            self._say("Three sixes in a row are cancelled.")
+        self._say(f"{name} rolled {value}.")
+        s.pending_rolls = resolve_rolls(len(s.rolls_collected), value)
+        s.rolls_collected = []
+        self._advance()
+
