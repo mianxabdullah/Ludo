@@ -193,3 +193,8 @@ class Controller:
             raise GameError("You have already rolled." if phase == "roll"
                             else "Roll the dice first.")
 
+    def _say(self, text):
+        self.events.append(text)
+        if self.state:
+            self.state.message = text
+
