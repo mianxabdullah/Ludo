@@ -180,3 +180,16 @@ class Controller:
                 self._say(f"{s.active().name}'s turn.")
                 return
 
+    # ---------- helpers ----------
+
+    def _check(self, want_cpu, phase):
+        if self.state is None:
+            raise GameError("No game in progress.")
+        if self.state.finished:
+            raise GameError("The game is over.")
+        if self.state.active().is_cpu != want_cpu:
+            raise GameError("It is the computer's turn.")
+        if self.phase != phase:
+            raise GameError("You have already rolled." if phase == "roll"
+                            else "Roll the dice first.")
+
