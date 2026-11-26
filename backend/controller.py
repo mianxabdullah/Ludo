@@ -150,3 +150,33 @@ class Controller:
         elif result["extra_roll"]:
             self.extra_rolls += 1  # taken after the current rolls (rule 13)
 
+    def _advance(self):
+        """Play pending rolls, then extra rolls, then pass the turn."""
+        s = self.state
+        self.movable = []
+        while True:
+            if s.pending_rolls:
+                roll = s.pending_rolls.pop(0)
+                s.dice_value = roll
+                moves = valid_moves(s, roll)
+                if not moves:
+                    self._say(f"{s.active().name} has no possible move.")
+                elif len(moves) == 1:
+                    self._do_move(moves[0], roll)  # automatic single move
+                    if s.finished:
+                        return
+                else:
+                    self.movable = moves  # player or CPU must choose
+                    self.phase = "move"
+                    return
+            elif self.extra_rolls > 0:
+                self.extra_rolls -= 1
+                self.phase = "roll"
+                self._say(f"{s.active().name} rolls again.")
+                return
+            else:
+                s.next_turn()
+                self.phase = "roll"
+                self._say(f"{s.active().name}'s turn.")
+                return
+
