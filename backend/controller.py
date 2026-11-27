@@ -198,3 +198,16 @@ class Controller:
         if self.state:
             self.state.message = text
 
+    def snapshot(self):
+        if self.state is None:
+            return {"in_game": False}
+        data = self.state.to_dict()
+        data.update({
+            "in_game": True,
+            "phase": self.phase,
+            "movable": self.movable,
+            "last_roll": self.last_roll,
+            "events": self.events,
+        })
+        return data
+
