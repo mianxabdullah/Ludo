@@ -22,3 +22,13 @@ class NewGame(BaseModel):
     players: int
     humans: int = 1
     names: List[str] = []
+
+class Move(BaseModel):
+    piece: int
+
+def run(action, *args):
+    try:
+        return action(*args)
+    except GameError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
