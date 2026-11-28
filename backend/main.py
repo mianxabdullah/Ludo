@@ -40,3 +40,7 @@ def run(action, *args):
 def get_state():
     return game.snapshot()
 
+@app.post("/api/new")
+def new_game(body: NewGame):
+    return run(game.new_game, body.mode, body.players, body.humans, body.names)
+
